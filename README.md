@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpendLens — AI Spend Audit for Startups
 
-## Getting Started
+SpendLens is a free tool that audits your AI tool subscriptions and finds where you're overspending. Built for startup founders and engineering managers who pay for Cursor, Claude, ChatGPT, GitHub Copilot, and similar tools.
 
-First, run the development server:
+Built as a lead generation asset for [Credex](https://credex.rocks) — which sells discounted AI credits to startups.
+
+## Screenshots
+
+> Add screenshots or Loom link here after deployment
+
+## Quick Start
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account
+- Resend account
+- Gemini API key
+
+### Install & Run Locally
 
 ```bash
+git clone https://github.com/YOUR_USERNAME/spendlens
+cd spendlens
+npm install
+cp .env.example .env.local
+# Fill in your environment variables
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+MONGODB_URI=your_mongodb_connection_string
+OPENAI_API_KEY=your_gemini_api_key
+OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+OPENAI_MODEL=gemini-2.5-flash
+RESEND_API_KEY=your_resend_api_key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-## Learn More
+### Deploy to Vercel
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+vercel
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Decisions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **MongoDB over Supabase** — Audit results are JSON blobs naturally. Mongoose schema validation gives us type safety without needing relational structure.
 
-## Deploy on Vercel
+2. **Deterministic audit engine over AI** — Financial recommendations must be traceable and defensible. AI hallucinations in savings calculations would destroy trust. Pure TypeScript rules are testable and auditable.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Non-blocking AI summary** — The audit saves instantly. The AI summary generates in the background. Users never wait for AI — they see results immediately and the summary loads in.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Honeypot over CAPTCHA for abuse protection** — CAPTCHAs hurt conversion. A hidden honeypot field catches bots silently without friction for real users.
+
+5. **localStorage for form persistence** — No auth required per spec. localStorage is zero-latency, works offline, and persists across reloads on the same device. The tradeoff is device-specificity, which is acceptable for a single-session tool.
+
+## Live URL
+
+> Add your Vercel URL here
